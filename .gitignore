@@ -10,3 +10,8 @@ __pycache__/
 .ipynb_checkpoints/
 .pytest_cache/
 .DS_Store
+
+# Explicitly published browser inference model files
+!docs/models/
+!docs/models/*.onnx
+!docs/models/*.json
