@@ -13,6 +13,9 @@ PlantVillage의 color 이미지에서 토마토 잎 10개 클래스(정상 포�
 - **grayscale**, **segmented** 이미지와 합치지 않습니다.
 - 데이터는 Git 저장소에 업로드하지 않습니다.
 
+## Google Colab에서 바로 실행
+[TomatoLab 학습 노트북 열기](https://colab.research.google.com/github/oyueo-mm/TomatoLab/blob/main/notebooks/TomatoLab_Colab.ipynb) — GPU 런타임을 선택하면 데이터 다운로드·분할·모델 학습·평가를 셀 순서대로 실행할 수 있습니다. 데이터 다운로드나 GPU 사용 가능 여부는 Colab 및 Kaggle 환경에 따라 달라집니다.
+
 ## 시작하기 (Python 3.10+, Colab GPU 권장)
 1. 환경 설치: `pip install -r requirements.txt`
 2. 데이터 준비: `python scripts/prepare_data.py --source /path/to/PlantVillage/color --output data/split`
