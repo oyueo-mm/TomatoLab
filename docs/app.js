@@ -36,6 +36,7 @@ function setStatus(title, kind, message) {
   el("modelStatus").textContent = title;
   el("modelStatus").className = "pill " + kind;
   el("modelMessage").textContent = message;
+  el("modelSettings").open = kind === "error" || (kind === "neutral" && message.includes("실패"));
 }
 async function loadModel(binary, label) {
   if (!window.ort) throw Error("추론 라이브러리를 불러오지 못했습니다. 인터넷 연결을 확인하세요.");
@@ -160,7 +161,7 @@ analyzeButton.addEventListener("click", async () => {
     showError("분류 실패: " + error.message);
   } finally {
     busy = false;
-    analyzeButton.textContent = "사진 분석하기 →";
+    analyzeButton.textContent = "분석하기";
     refreshButton();
   }
 });

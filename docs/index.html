@@ -14,74 +14,58 @@
   <div class="layout">
     <aside id="sidebar" class="sidebar">
       <div class="brand"><span class="logo" aria-hidden="true">T</span><span class="brand-name">TomatoLab</span></div>
-      <p class="side-label">실험실</p>
+      
       <nav aria-label="실험실 메뉴">
-        <button class="nav active" data-view="analyze"><span class="nav-icon">▣</span> 사진 분석</button>
-        <button class="nav" data-view="performance"><span class="nav-icon">▥</span> 모델 비교</button>
-        <button class="nav" data-view="about"><span class="nav-icon">ⓘ</span> 프로젝트 소개</button>
+        <button class="nav active" data-view="analyze"><span class="nav-icon">▣</span> 분석</button>
+        <button class="nav" data-view="performance"><span class="nav-icon">▥</span> 비교</button>
+        <button class="nav" data-view="about"><span class="nav-icon">ⓘ</span> 소개</button>
       </nav>
-      <div class="sidebar-foot"><span class="mini-dot"></span> PlantVillage · ResNet18 <a href="https://github.com/oyueo-mm/TomatoLab" target="_blank" rel="noopener noreferrer">GitHub 저장소 ↗</a></div>
+      <div class="sidebar-foot"><a href="https://github.com/oyueo-mm/TomatoLab" target="_blank" rel="noopener noreferrer">GitHub ↗</a></div>
     </aside>
     <div class="content">
       <header class="topbar">
-        <button id="menuToggle" class="menu-toggle" title="메뉴 열기/닫기" aria-label="메뉴 열기/닫기">☰</button>
-        <span class="top-brand">TomatoLab</span>
-        <span class="top-meta">AI IMAGE CLASSIFICATION LAB</span>
+        <button id="menuToggle" class="menu-toggle" aria-label="메뉴 열기/닫기" title="메뉴">☰</button>
       </header>
       <main>
         <section id="view-analyze" class="view active">
-          <div class="intro">
-            <div class="eyebrow"><span class="mini-dot"></span> 토마토 잎 질병 분류</div>
-            <h1>잎 사진으로 상태를 분석해 보세요.</h1>
-            <p>직접 학습한 ResNet18 모델을 사용해 토마토 잎을 정상 및 9개 질병·피해 범주로 분류합니다.</p>
-          </div>
-          <div class="stats-strip">
-            <div><span>테스트 정확도</span><strong>97.02%</strong></div>
-            <div><span>Macro F1</span><strong>0.9640</strong></div>
-            <div><span>분류 범주</span><strong>10종</strong></div>
-            <div><span>테스트 이미지</span><strong>2,720장</strong></div>
-          </div>
-          <div class="notice" role="note">이 웹사이트는 연구용 분류 실험입니다. 실제 병해 진단이나 농약 사용 결정에 활용하지 마세요. 아래 수치는 PlantVillage 내부 테스트셋 기준입니다.</div>
-          <div class="model-card">
-            <div class="model-head">
-              <div><div class="section-mini">01 · 모델 준비</div><h2>학습 모델 연결</h2><p>브라우저에서 직접 추론합니다. 서버에 사진을 업로드하지 않습니다.</p></div>
-              <span id="modelStatus" class="pill neutral">모델 연결 필요</span>
-            </div>
-            <div class="model-actions">
-              <label class="button outline" for="modelFile">ONNX 모델 파일 선택</label>
-              <input id="modelFile" type="file" accept=".onnx,application/octet-stream" hidden>
-              <span id="modelFilename" class="file-hint">모델이 아직 준비되지 않았습니다.</span>
-            </div>
-            <div id="modelMessage" class="inline-message">PyTorch 가중치(.pt)는 브라우저에서 바로 실행할 수 없습니다. 저장소의 ONNX 변환 스크립트로 만든 .onnx 파일을 선택하세요.</div>
+          <div class="analyze-header">
+            <h1>토마토 잎 분석</h1>
+            <details id="modelSettings" class="model-settings">
+              <summary id="modelStatus" class="pill neutral" aria-live="polite">모델 확인 중</summary>
+              <div class="model-control-content">
+                <div class="model-actions">
+                  <label class="button outline" for="modelFile">모델 선택</label>
+                  <input id="modelFile" type="file" accept=".onnx,application/octet-stream" hidden>
+                  <span id="modelFilename" class="file-hint">ONNX 파일</span>
+                </div>
+                <p id="modelMessage" class="inline-message">모델 확인 중</p>
+              </div>
+            </details>
           </div>
           <div class="workspace">
             <section class="panel">
-              <div class="section-mini">02 · 이미지 입력</div>
-              <h2>토마토 잎 사진</h2>
-              <p class="panel-caption">JPG, PNG, WEBP · 이미지를 선택하거나 아래로 끌어다 놓으세요.</p>
+              <h2>사진</h2>
               <label id="dropzone" class="dropzone" for="imageFile">
-                <span id="placeholder" class="upload-placeholder"><span class="upload-icon">↑</span><strong>사진을 업로드해 주세요</strong><small>클릭하거나 드래그 앤 드롭</small></span>
-                <img id="preview" alt="선택한 토마토 잎 사진 미리보기" hidden>
+                <span id="placeholder" class="upload-placeholder"><span class="upload-icon" aria-hidden="true">↑</span><strong>사진 선택</strong><small>또는 드래그</small></span>
+                <img id="preview" alt="선택한 토마토 잎 사진" hidden>
               </label>
               <input id="imageFile" type="file" accept="image/*" hidden>
-              <div class="photo-footer"><span id="imageFilename">선택된 이미지 없음</span><button id="analyzeBtn" class="button primary" disabled>사진 분석하기 →</button></div>
+              <div class="photo-footer"><span id="imageFilename"></span><button id="analyzeBtn" class="button primary" disabled>분석하기</button></div>
             </section>
             <section class="panel results">
-              <div class="section-mini">03 · AI 분석 결과</div>
-              <h2>분류 결과</h2>
-              <div id="emptyResults" class="empty-results"><div class="empty-glyph">◎</div><strong>분석을 기다리고 있어요</strong><p>모델과 사진을 준비한 후 분석 버튼을 눌러 주세요.</p></div>
+              <h2>결과</h2>
+              <div id="emptyResults" class="empty-results"><div class="empty-glyph" aria-hidden="true">◎</div><strong>사진을 선택하세요</strong></div>
               <div id="results" hidden>
-                <p class="result-caption">가장 높은 예측값</p>
                 <h3 id="topLabel"></h3>
-                <div class="top-score"><strong id="topScore"></strong><span>모델 출력 확률</span></div>
+                <div class="top-score"><strong id="topScore"></strong></div>
                 <hr>
-                <p class="result-caption">전체 10개 범주</p>
                 <div id="ranking" class="ranking"></div>
-                <p class="result-warning">확률은 보정된 신뢰도가 아니며, 사진 촬영 환경에 따라 달라질 수 있습니다.</p>
+                <p class="result-warning">예측 확률 · 진단 결과 아님</p>
               </div>
-              <p id="resultError" class="error" hidden></p>
+              <p id="resultError" class="error" role="alert" hidden></p>
             </section>
           </div>
+          <p class="disclaimer">연구용 · 실제 질병 진단에 사용하지 마세요. <span>정확도 97.02%는 PlantVillage 내부 테스트 기준</span></p>
         </section>
         <section id="view-performance" class="view">
           <div class="intro"><div class="eyebrow">MODEL BENCHMARK</div><h1>모델별 성능 비교</h1><p>동일한 PlantVillage 테스트셋에서 기본 CNN과 사전학습 ResNet18의 결과를 비교했습니다.</p></div>
@@ -106,7 +90,7 @@
           <div class="panel full-panel"><h2>현재 한계</h2><p>대부분의 학습 이미지는 통제된 조건에서 촬영됐습니다. 일반 농장·온실의 복잡한 배경, 조명, 여러 장의 잎이 포함된 사진에서의 신뢰도는 검증되지 않았습니다. 유사 이미지에 의한 데이터 누수 가능성도 완전히 배제하지 않았습니다.</p><p>화면에 표시되는 분류 확률은 소프트맥스 출력값이며 교정된 신뢰도나 실제 질병 확진을 의미하지 않습니다.</p><a class="text-link" href="https://github.com/oyueo-mm/TomatoLab" target="_blank" rel="noopener noreferrer">GitHub 코드와 Colab 노트북 보기 ↗</a></div>
         </section>
       </main>
-      <footer>TomatoLab · 인공지능 기반 토마토 잎 분류 실험 · 연구 및 교육용</footer>
+      <footer>TomatoLab · 연구용</footer>
     </div>
   </div>
 </body>
