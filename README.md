@@ -49,3 +49,12 @@ Colab 실행 노트북, 학습 곡선, Grad-CAM, 외부 실환경 이미지 테�
 ## 참고 문서
 - [torchvision ResNet18](https://docs.pytorch.org/vision/main/models/generated/torchvision.models.resnet18.html)
 - [PlantVillage (Kaggle)](https://www.kaggle.com/datasets/abdallahalidev/plantvillage-dataset)
+
+## 웹앱 실행
+
+- **로컬 Gradio:** 학습 가중치 `artifacts/resnet18/best.pt`를 두고 `python app.py`로 실행합니다. 체크포인트 파일은 저장소에 포함되지 않습니다.
+- **정적 웹 UI:** [docs/index.html](docs/index.html)에 사진 업로드, 모델 비교, 질병별 Recall·혼동행렬을 구현했습니다. 실제 브라우저 추론에는 별도의 `.onnx` 모델 파일이 필요합니다.
+- **ONNX 내보내기:** `pip install onnx onnxruntime` 후 `python scripts/export_onnx.py --checkpoint artifacts/resnet18/best.pt --output docs/models/resnet18.onnx`
+- **배포 안내:** [docs/README.md](docs/README.md). GitHub Pages는 Settings → Pages에서 GitHub Actions로 최초 활성화해야 합니다.
+
+ResNet18 테스트 정확도 97.02% 및 Macro F1 0.9640은 PlantVillage 내부 테스트셋의 결과입니다. 실외 성능을 뜻하지 않습니다.
