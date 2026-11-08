@@ -1,1 +1,4 @@
-{"modelUrl":null,"note":"Set modelUrl to a CORS-enabled HTTPS URL of the exported ONNX model only after hosting and verifying it."}
+{
+  "modelUrl": "./models/resnet18.onnx",
+  "note": "TomatoLab ResNet18 ONNX model. Host docs/models/resnet18.onnx in the Pages deployment; users can choose a local file if this is unavailable."
+}
