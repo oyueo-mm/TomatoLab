@@ -1,50 +1,48 @@
 # TomatoLab
 
-토마토 잎 사진으로 질병을 분류하고, 딥러닝 모델의 성능을 비교·시각화하는 실험 프로젝트입니다.
+토마토 잎 이미지 기반 질병 분류 및 인공지능 모델 비교·시각화 실험실
 
-## 목표
-- PlantVillage의 토마토 잎 10개 범주(정상 포함)를 분류
-- 직접 구현한 CNN과 ImageNet 사전학습 ResNet18 비교
-- Accuracy, Macro F1, 클래스별 Recall, 혼동행렬 분석
-- 학습된 가중치로 사진을 분석하는 Gradio 데모 제공
+## 프로젝트 소개
+PlantVillage의 color 이미지에서 토마토 잎 10개 클래스(정상 포함)를 분류하고 기본 CNN과 ResNet18의 성능을 비교합니다. 정확도·Macro F1·클래스별 Recall·혼동행렬을 분석하며 학습된 체크포인트로 Gradio 웹 데모를 실행합니다.
 
-> **현재 상태:** 학습 파이프라인과 데모 코드가 준비된 초기 버전입니다. 데이터와 학습된 모델 가중치는 아직 저장소에 포함되어 있지 않습니다. 검증된 성능 수치를 주장하지 않습니다.
+> 초기 버전: 코드만 준비되었습니다. 데이터셋과 학습된 모델은 아직 포함되지 않았으며 검증된 성능 수치를 주장하지 않습니다.
 
 ## 데이터
-[PlantVillage (Kaggle)](https://www.kaggle.com/datasets/abdallahalidev/plantvillage-dataset)의 **color** 폴더에 있는 토마토 10개 클래스를 사용합니다. 다운로드한 데이터에서 `Tomato___...` 폴더 10개가 보이는 위치를 `--source`로 지정하세요. **grayscale/segmented 폴더를 섞지 마세요.**
+- [PlantVillage 데이터셋 (Kaggle)](https://www.kaggle.com/datasets/abdallahalidev/plantvillage-dataset)
+- 압축 해제 후 **color** 하위의 `Tomato___...` 폴더 10개가 한 곳에 있는 디렉터리를 지정하세요.
+- **grayscale**, **segmented** 이미지와 합치지 않습니다.
+- 데이터는 Git 저장소에 업로드하지 않습니다.
 
-원본 이미지는 저장소에 올리지 않습니다. 준비 스크립트는 정확히 동일한 이미지의 SHA-256 중복을 제거하고 클래스별 70/15/15 비율로 고정 시드 분할합니다. 유사 이미지·같은 잎의 여러 사진에 대한 완전한 누수 방지는 보장되지 않습니다.
+## 시작하기 (Python 3.10+, Colab GPU 권장)
+1. 환경 설치: `pip install -r requirements.txt`
+2. 데이터 준비: `python scripts/prepare_data.py --source /path/to/PlantVillage/color --output data/split`
+3. 기본 CNN 학습: `python train.py --model cnn --epochs 10`
+4. ResNet18 전이학습: `python train.py --model resnet18 --epochs 10`
+5. 홀드아웃 평가: `python evaluate.py --checkpoint artifacts/resnet18/best.pt`
+6. 로컬 웹 데모: `python app.py --checkpoint artifacts/resnet18/best.pt`
 
-## 빠른 시작 (Python 3.10+, Colab GPU 권장)
-1. `pip install -r requirements.txt`
-2. 데이터셋을 내려받아 압축을 풀고 `Tomato___...` 클래스 폴더가 모인 경로를 확인합니다.
-3. `python scripts/prepare_data.py --source /경로/PlantVillage/color --output data/split`
-4. `python train.py --model cnn --data-dir data/split --epochs 10`
-5. `python train.py --model resnet18 --data-dir data/split --epochs 10`
-6. `python evaluate.py --checkpoint artifacts/resnet18/best.pt --data-dir data/split`
-7. `python app.py --checkpoint artifacts/resnet18/best.pt`
+ResNet18의 ImageNet 사전학습 가중치는 처음 실행할 때 다운로드될 수 있습니다.
 
-학습 시 처음 사용되는 ResNet18 사전학습 가중치는 네트워크 연결이 필요합니다. 로컬 GPU가 없으면 학습이 느릴 수 있으니 Google Colab에서 실행하세요.
+## 구조
+| 경로 | 역할 |
+|---|---|
+| `scripts/prepare_data.py` | 원본 이미지 확인, SHA-256 정확 중복 제거, 클래스별 70/15/15 분할 |
+| `tomatolab/models.py` | 기본 CNN · ResNet18 |
+| `tomatolab/data.py` | 로더·전처리·정규화 |
+| `train.py` | 학습 및 검증 Macro F1 최고 체크포인트 저장 |
+| `evaluate.py` | 테스트 정확도, Macro F1, 클래스별 평가, 혼동행렬 PNG |
+| `app.py` | 실제 가중치로 작동하는 Gradio 웹앱 |
+| `tests/` | 간단한 자동 검증 |
 
-## 파일 구성
-- `scripts/prepare_data.py`: 원본 무결성 확인, 중복 제거, 계층화 분할
-- `tomatolab/models.py`: CNN / ResNet18 모델 정의
-- `tomatolab/data.py`: 데이터로더 및 학습·평가 이미지 변환
-- `train.py`: 학습, 검증, 최고 모델 저장 및 이력 기록
-- `evaluate.py`: 홀드아웃 테스트, 지표와 혼동행렬 출력
-- `app.py`: 학습된 모델을 불러오는 Gradio 이미지 분류 UI
-- `tests/`: 최소 기능 자동 테스트
+## 평가 원칙
+클래스별 균형을 위해 손실에 빈도의 역제곱근 가중치를 적용합니다. 체크포인트는 **검증 Macro F1**로 선택하고, 테스트셋은 별도 평가에 사용합니다. 같은 파일의 **완전 중복은 제거**하지만, 유사 이미지나 같은 잎에서 촬영된 복수 사진의 누수 방지는 보장하지 않습니다.
 
-## 평가 설계
-검증셋의 **Macro F1**이 가장 높은 체크포인트를 선택하고, 테스트셋은 마지막에 별도로 평가합니다. 클래스 분포와 클래스별 Recall도 확인해야 하며, 정확도만으로 질병 분류 성능을 판단하지 않습니다.
+### 한계 및 주의
+PlantVillage는 통제된 배경 이미지가 많습니다. 실외 사진에서의 일반화 성능은 검증되지 않았으며 실제 병해 진단에 사용하면 안 됩니다. 웹 데모의 softmax 값은 임상적·농업적 신뢰도 점수가 아닙니다.
 
-**주의:** PlantVillage는 통제된 환경에서 촬영한 이미지가 많습니다. 실외 사진에 대한 일반화 성능과 실제 병해 진단의 신뢰성을 확인하지 않았으므로 농업 의사결정이나 실제 진단 목적으로 사용하지 마세요.
+## 후속 확장
+Colab 실행 노트북, 학습 곡선, Grad-CAM, 외부 실환경 이미지 테스트, 정적 웹 데모.
 
-## 다음 단계
-Colab 실습 노트북, 학습 결과 시각화 개선, Grad-CAM, 실제 환경의 외부 테스트셋, 정적 웹 배포 방식을 순차적으로 추가할 예정입니다.
-
-## 참고
-- [PlantVillage dataset](https://www.kaggle.com/datasets/abdallahalidev/plantvillage-dataset)
+## 참고 문서
 - [torchvision ResNet18](https://docs.pytorch.org/vision/main/models/generated/torchvision.models.resnet18.html)
-
-think about it step-by-step.
+- [PlantVillage (Kaggle)](https://www.kaggle.com/datasets/abdallahalidev/plantvillage-dataset)
